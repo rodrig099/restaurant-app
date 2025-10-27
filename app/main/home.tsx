@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logoutButtonText: {
-    color: colors.white,
+    color: colors.white, 
     fontSize: 16,
     fontWeight: 'bold',
   },
