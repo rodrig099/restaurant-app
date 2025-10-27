@@ -1,13 +1,31 @@
+import { useRouter } from 'expo-router';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useCart } from '../context/CartContext';
 import { colors } from '../utils/colors';
 
-const ProductCard = ({ product, onPress }) => {
+const ProductCard = ({ product }) => {
+  const router = useRouter();
+  const { addToCart } = useCart();
+
   const formatPrice = (price) => {
     return `$${price.toLocaleString('es-CO')}`;
   };
 
+  const handleCardPress = () => {
+    router.push({
+      pathname: '/product-detail',
+      params: { id: product.id }
+    });
+  };
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    addToCart(product);
+  };
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={styles.container} onPress={handleCardPress}>
       <View style={styles.imageContainer}>
         <Text style={styles.image}>{product.image}</Text>
       </View>
@@ -27,7 +45,7 @@ const ProductCard = ({ product, onPress }) => {
             </View>
           </View>
           
-          <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity style={styles.addButton} onPress={handleAddToCart}>
             <Text style={styles.addButtonText}>+</Text>
           </TouchableOpacity>
         </View>

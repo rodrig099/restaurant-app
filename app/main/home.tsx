@@ -1,14 +1,16 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import CategoryCard from '../../src/components/CategoryCard';
 import ProductCard from '../../src/components/ProductCard';
 import { useAuth } from '../../src/context/AuthContext';
+import { useCart } from '../../src/context/CartContext';
 import { colors } from '../../src/utils/colors';
 import { categories, products } from '../../src/utils/mockData';
 
 export default function HomeScreen() {
   const { user, isGuest } = useAuth();
+  const { cartItems } = useCart();
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -20,13 +22,10 @@ export default function HomeScreen() {
     setSelectedCategory(categoryId);
   };
 
-  const handleProductPress = (product) => {
-    // Por ahora solo mostramos un alert
-    alert(`Seleccionaste: ${product.name}`);
-  };
+  const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <View>
@@ -35,11 +34,13 @@ export default function HomeScreen() {
             {isGuest ? 'Invitado' : user?.name || 'Usuario'}
           </Text>
         </View>
-        <TouchableOpacity style={styles.cartButton}>
+        <TouchableOpacity style={styles.cartButton} onPress={() => router.push('/main/cart')}>
           <Text style={styles.cartIcon}>🛒</Text>
-          <View style={styles.cartBadge}>
-            <Text style={styles.cartBadgeText}>0</Text>
-          </View>
+          {cartItemsCount > 0 && (
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>{cartItemsCount}</Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
 
@@ -91,13 +92,15 @@ export default function HomeScreen() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onPress={() => handleProductPress(product)}
               />
             ))}
           </View>
         </View>
+        
+        {/* Espacio adicional para el tab bar */}
+        <View style={{ height: 20 }} />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
