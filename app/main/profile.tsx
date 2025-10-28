@@ -70,7 +70,7 @@ export default function ProfileScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Cuenta</Text>
               <View style={styles.menuContainer}>
-                <MenuItem icon="📍" title="Mis Direcciones" onPress={() => {}} />
+                <MenuItem icon="📍" title="Mis Direcciones" onPress={() => router.push('/addresses')} />
                 <MenuItem icon="💳" title="Métodos de Pago" onPress={() => {}} />
                 <MenuItem icon="🎟️" title="Cupones" onPress={() => {}} />
               </View>
