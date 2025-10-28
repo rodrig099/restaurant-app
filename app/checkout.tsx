@@ -4,6 +4,7 @@ import { Alert, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, Vi
 import { useAddress } from '../src/context/AddressContext';
 import { useAuth } from '../src/context/AuthContext';
 import { useCart } from '../src/context/CartContext';
+import { useOrders } from '../src/context/OrderContext';
 import { colors } from '../src/utils/colors';
 
 export default function CheckoutScreen() {
@@ -11,6 +12,7 @@ export default function CheckoutScreen() {
   const { cartItems, getCartTotal, clearCart } = useCart();
   const { getDefaultAddress } = useAddress();
   const { user, isGuest } = useAuth();
+  const { addOrder } = useOrders();
 
   const deliveryAddress = getDefaultAddress();
   const subtotal = getCartTotal();
@@ -22,48 +24,57 @@ export default function CheckoutScreen() {
   };
 
   const handlePlaceOrder = () => {
-    if (isGuest) {
-      Alert.alert(
-        'Iniciar sesión',
-        'Debes iniciar sesión para realizar un pedido',
-        [
-          { text: 'Cancelar', style: 'cancel' },
-          {
-            text: 'Iniciar sesión',
-            onPress: () => router.replace('/auth/login'),
-          },
-        ]
-      );
-      return;
+  if (isGuest) {
+    Alert.alert(
+      'Iniciar sesión',
+      'Debes iniciar sesión para realizar un pedido',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Iniciar sesión',
+          onPress: () => router.replace('/auth/login'),
+        },
+      ]
+    );
+    return;
+  }
+
+  if (!deliveryAddress) {
+    Alert.alert('Error', 'Debes agregar una dirección de entrega');
+    return;
+  }
+
+  // Crear y guardar el pedido
+  const orderData = {
+  items: cartItems.map(item => ({
+    id: item.id,
+    name: item.name,
+    price: item.price,
+    image: item.image,
+    quantity: item.quantity,
+    description: item.description,
+    category: item.category,
+    rating: item.rating,
+    preparationTime: item.preparationTime,
+  })),
+  subtotal,
+  deliveryFee,
+  total,
+  address: deliveryAddress,
+  paymentMethod: 'Efectivo contra entrega',
+};
+
+  const newOrder = addOrder(orderData);
+  clearCart();
+  
+  router.push({
+    pathname: '/order-confirmation',
+    params: { 
+      orderId: newOrder.id,
+      total: newOrder.total,
     }
-
-    if (!deliveryAddress) {
-      Alert.alert('Error', 'Debes agregar una dirección de entrega');
-      return;
-    }
-
-    // Simular creación de pedido
-    const order = {
-      id: Date.now().toString(),
-      items: cartItems,
-      subtotal,
-      deliveryFee,
-      total,
-      address: deliveryAddress,
-      paymentMethod: 'Efectivo contra entrega',
-      status: 'Confirmado',
-      date: new Date().toLocaleDateString('es-CO'),
-    };
-
-    clearCart();
-    router.push({
-      pathname: '/order-confirmation',
-      params: { 
-        orderId: order.id,
-        total: order.total,
-      }
-    });
-  };
+  });
+};
 
   return (
     <SafeAreaView style={styles.container}>
