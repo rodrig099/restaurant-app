@@ -1,9 +1,17 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useCart } from '../src/context/CartContext';
-import { colors } from '../src/utils/colors';
-import { products } from '../src/utils/mockData';
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+    Alert,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
+import { useCart } from "../src/context/CartContext";
+import { colors } from "../src/utils/colors";
+import { products } from "../src/utils/mockData";
 
 export default function ProductDetailScreen() {
   const router = useRouter();
@@ -11,7 +19,7 @@ export default function ProductDetailScreen() {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
 
-  const product = products.find(p => p.id === params.id);
+  const product = products.find((p) => p.id === params.id);
 
   if (!product) {
     return (
@@ -22,14 +30,29 @@ export default function ProductDetailScreen() {
   }
 
   const formatPrice = (price) => {
-    return `$${price.toLocaleString('es-CO')}`;
+    return `$${price.toLocaleString("es-CO")}`;
   };
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addToCart(product);
-    }
-    router.back();
+    // Agregar con la cantidad especificada de una sola vez
+    addToCart(product, quantity);
+
+    Alert.alert(
+      "¡Agregado!",
+      `${quantity} ${product.name} agregado${
+        quantity > 1 ? "s" : ""
+      } al carrito`,
+      [
+        {
+          text: "Ver carrito",
+          onPress: () => router.push("/main/cart"),
+        },
+        {
+          text: "Seguir comprando",
+          onPress: () => router.back(),
+        },
+      ]
+    );
   };
 
   const incrementQuantity = () => {
@@ -46,7 +69,10 @@ export default function ProductDetailScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Detalle</Text>
@@ -95,16 +121,16 @@ export default function ProductDetailScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Cantidad</Text>
             <View style={styles.quantitySelector}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.quantityButton}
                 onPress={decrementQuantity}
               >
                 <Text style={styles.quantityButtonText}>-</Text>
               </TouchableOpacity>
-              
+
               <Text style={styles.quantityValue}>{quantity}</Text>
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 style={styles.quantityButton}
                 onPress={incrementQuantity}
               >
@@ -119,7 +145,9 @@ export default function ProductDetailScreen() {
       <View style={styles.footer}>
         <View>
           <Text style={styles.totalLabel}>Total</Text>
-          <Text style={styles.totalPrice}>{formatPrice(product.price * quantity)}</Text>
+          <Text style={styles.totalPrice}>
+            {formatPrice(product.price * quantity)}
+          </Text>
         </View>
         <TouchableOpacity style={styles.addButton} onPress={handleAddToCart}>
           <Text style={styles.addButtonText}>Agregar al carrito</Text>
@@ -135,9 +163,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 20,
     paddingTop: 10,
     borderBottomWidth: 1,
@@ -146,8 +174,8 @@ const styles = StyleSheet.create({
   backButton: {
     width: 40,
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   backButtonText: {
     fontSize: 28,
@@ -155,14 +183,14 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
   },
   imageContainer: {
     backgroundColor: colors.card,
     height: 280,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   productImage: {
     fontSize: 120,
@@ -171,42 +199,42 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: 12,
   },
   productName: {
     fontSize: 26,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
     flex: 1,
     marginRight: 12,
   },
   ratingBadge: {
-    backgroundColor: colors.warning + '30',
+    backgroundColor: colors.warning + "30",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
   },
   ratingText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text,
   },
   productPrice: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.primary,
     marginBottom: 16,
   },
   infoRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 20,
   },
   infoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 20,
     backgroundColor: colors.card,
     paddingHorizontal: 12,
@@ -220,7 +248,7 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 14,
     color: colors.text,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   divider: {
     height: 1,
@@ -232,7 +260,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
     marginBottom: 12,
   },
@@ -242,9 +270,9 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   quantitySelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
     backgroundColor: colors.card,
     borderRadius: 12,
     padding: 8,
@@ -254,24 +282,24 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: colors.white,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   quantityButtonText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.primary,
   },
   quantityValue: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
     marginHorizontal: 24,
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 20,
     borderTopWidth: 1,
     borderTopColor: colors.border,
@@ -284,7 +312,7 @@ const styles = StyleSheet.create({
   },
   totalPrice: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
   },
   addButton: {
@@ -294,11 +322,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     flex: 1,
     marginLeft: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   addButtonText: {
     color: colors.white,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

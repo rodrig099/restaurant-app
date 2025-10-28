@@ -1,12 +1,14 @@
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useCart } from '../context/CartContext';
 import { colors } from '../utils/colors';
+import Toast from './Toast';
 
 const ProductCard = ({ product }) => {
   const router = useRouter();
   const { addToCart } = useCart();
+  const [showToast, setShowToast] = useState(false);
 
   const formatPrice = (price) => {
     return `$${price.toLocaleString('es-CO')}`;
@@ -22,35 +24,44 @@ const ProductCard = ({ product }) => {
   const handleAddToCart = (e) => {
     e.stopPropagation();
     addToCart(product);
+    setShowToast(true);
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handleCardPress}>
-      <View style={styles.imageContainer}>
-        <Text style={styles.image}>{product.image}</Text>
-      </View>
-      
-      <View style={styles.content}>
-        <Text style={styles.name}>{product.name}</Text>
-        <Text style={styles.description} numberOfLines={2}>
-          {product.description}
-        </Text>
-        
-        <View style={styles.footer}>
-          <View>
-            <Text style={styles.price}>{formatPrice(product.price)}</Text>
-            <View style={styles.ratingContainer}>
-              <Text style={styles.rating}>⭐ {product.rating}</Text>
-              <Text style={styles.time}>• {product.preparationTime}</Text>
-            </View>
-          </View>
-          
-          <TouchableOpacity style={styles.addButton} onPress={handleAddToCart}>
-            <Text style={styles.addButtonText}>+</Text>
-          </TouchableOpacity>
+    <>
+      <TouchableOpacity style={styles.container} onPress={handleCardPress}>
+        <View style={styles.imageContainer}>
+          <Text style={styles.image}>{product.image}</Text>
         </View>
-      </View>
-    </TouchableOpacity>
+        
+        <View style={styles.content}>
+          <Text style={styles.name}>{product.name}</Text>
+          <Text style={styles.description} numberOfLines={2}>
+            {product.description}
+          </Text>
+          
+          <View style={styles.footer}>
+            <View>
+              <Text style={styles.price}>{formatPrice(product.price)}</Text>
+              <View style={styles.ratingContainer}>
+                <Text style={styles.rating}>⭐ {product.rating}</Text>
+                <Text style={styles.time}>• {product.preparationTime}</Text>
+              </View>
+            </View>
+            
+            <TouchableOpacity style={styles.addButton} onPress={handleAddToCart}>
+              <Text style={styles.addButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableOpacity>
+      
+      <Toast 
+        message="✓ Agregado al carrito"
+        visible={showToast}
+        onHide={() => setShowToast(false)}
+      />
+    </>
   );
 };
 

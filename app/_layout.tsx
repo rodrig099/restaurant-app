@@ -13,6 +13,13 @@ export default function RootLayout() {
           <Stack.Screen name="auth/login" />
           <Stack.Screen name="auth/register" />
           <Stack.Screen name="main" />
+          <Stack.Screen 
+            name="product-detail" 
+            options={{
+              presentation: 'modal',
+              animation: 'slide_from_bottom',
+            }}
+          />
         </Stack>
       </CartProvider>
     </AuthProvider>
