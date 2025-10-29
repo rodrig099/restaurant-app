@@ -1,31 +1,59 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../src/context/AuthContext';
 import { colors } from '../../src/utils/colors';
+import { validateEmail, validatePassword, validatePhone } from '../../src/utils/validators';
 
-export default function RegisterScreen() {
+const RegisterScreen = () => {
+  const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const router = useRouter();
 
   const handleRegister = () => {
+    // Validaciones
     if (!name || !email || !phone || !password || !confirmPassword) {
-      alert('Por favor completa todos los campos');
+      Alert.alert('Error', 'Por favor completa todos los campos');
+      return;
+    }
+
+    if (name.length < 3) {
+      Alert.alert('Error', 'El nombre debe tener al menos 3 caracteres');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      Alert.alert('Error', 'Por favor ingresa un email válido');
+      return;
+    }
+
+    if (!validatePhone(phone)) {
+      Alert.alert('Error', 'Por favor ingresa un teléfono válido');
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres');
       return;
     }
 
     if (password !== confirmPassword) {
-      alert('Las contraseñas no coinciden');
+      Alert.alert('Error', 'Las contraseñas no coinciden');
       return;
     }
 
-    login({ email, name, phone });
-    router.replace('/main/home');
+    setLoading(true);
+    // Simular registro
+    setTimeout(() => {
+      login({ email, name, phone });
+      setLoading(false);
+      router.replace('/main/home');
+    }, 1000);
   };
 
   return (
@@ -47,6 +75,7 @@ export default function RegisterScreen() {
               placeholder="Juan Pérez"
               value={name}
               onChangeText={setName}
+              editable={!loading}
             />
           </View>
 
@@ -59,6 +88,7 @@ export default function RegisterScreen() {
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
+              editable={!loading}
             />
           </View>
 
@@ -70,6 +100,7 @@ export default function RegisterScreen() {
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"
+              editable={!loading}
             />
           </View>
 
@@ -81,6 +112,7 @@ export default function RegisterScreen() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry
+              editable={!loading}
             />
           </View>
 
@@ -92,14 +124,18 @@ export default function RegisterScreen() {
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry
+              editable={!loading}
             />
           </View>
 
           <TouchableOpacity 
-            style={styles.registerButton}
+            style={[styles.registerButton, loading && styles.registerButtonDisabled]}
             onPress={handleRegister}
+            disabled={loading}
           >
-            <Text style={styles.registerButtonText}>Registrarse</Text>
+            <Text style={styles.registerButtonText}>
+              {loading ? 'Registrando...' : 'Registrarse'}
+            </Text>
           </TouchableOpacity>
 
           <View style={styles.loginContainer}>
@@ -112,7 +148,7 @@ export default function RegisterScreen() {
       </ScrollView>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -165,6 +201,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
+  registerButtonDisabled: {
+    backgroundColor: colors.textLight,
+  },
   registerButtonText: {
     color: colors.white,
     fontSize: 16,
@@ -185,3 +224,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default RegisterScreen;

@@ -1,8 +1,18 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useAddress } from '../src/context/AddressContext';
-import { colors } from '../src/utils/colors';
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useAddress } from "../src/context/AddressContext";
+import { colors } from "../src/utils/colors";
 
 export default function AddAddressScreen() {
   const router = useRouter();
@@ -11,15 +21,35 @@ export default function AddAddressScreen() {
 
   const isEditing = !!params.id;
 
-  const [name, setName] = useState(params.name || '');
-  const [fullAddress, setFullAddress] = useState(params.fullAddress || '');
-  const [city, setCity] = useState(params.city || '');
-  const [department, setDepartment] = useState(params.department || '');
-  const [instructions, setInstructions] = useState(params.instructions || '');
+  const [name, setName] = useState(params.name || "");
+  const [fullAddress, setFullAddress] = useState(params.fullAddress || "");
+  const [city, setCity] = useState(params.city || "");
+  const [department, setDepartment] = useState(params.department || "");
+  const [instructions, setInstructions] = useState(params.instructions || "");
 
   const handleSave = () => {
     if (!name || !fullAddress || !city || !department) {
-      alert('Por favor completa todos los campos obligatorios');
+      Alert.alert("Error", "Por favor completa todos los campos obligatorios");
+      return;
+    }
+
+    if (name.length < 3) {
+      Alert.alert("Error", "El nombre debe tener al menos 3 caracteres");
+      return;
+    }
+
+    if (fullAddress.length < 10) {
+      Alert.alert("Error", "Por favor ingresa una dirección completa");
+      return;
+    }
+
+    if (city.length < 3) {
+      Alert.alert("Error", "Por favor ingresa una ciudad válida");
+      return;
+    }
+
+    if (department.length < 3) {
+      Alert.alert("Error", "Por favor ingresa un departamento válido");
       return;
     }
 
@@ -33,8 +63,10 @@ export default function AddAddressScreen() {
 
     if (isEditing) {
       updateAddress(params.id, addressData);
+      Alert.alert("¡Listo!", "Dirección actualizada exitosamente");
     } else {
       addAddress(addressData);
+      Alert.alert("¡Listo!", "Dirección agregada exitosamente");
     }
 
     router.back();
@@ -42,17 +74,20 @@ export default function AddAddressScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
           <Text style={styles.headerTitle}>
-            {isEditing ? 'Editar Dirección' : 'Nueva Dirección'}
+            {isEditing ? "Editar Dirección" : "Nueva Dirección"}
           </Text>
           <View style={styles.backButton} />
         </View>
@@ -101,7 +136,9 @@ export default function AddAddressScreen() {
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Instrucciones de entrega (opcional)</Text>
+            <Text style={styles.label}>
+              Instrucciones de entrega (opcional)
+            </Text>
             <TextInput
               style={[styles.input, styles.textArea]}
               placeholder="Ej: Apartamento 301, timbre rojo"
@@ -119,7 +156,7 @@ export default function AddAddressScreen() {
         <View style={styles.footer}>
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.saveButtonText}>
-              {isEditing ? 'Guardar cambios' : 'Agregar dirección'}
+              {isEditing ? "Guardar cambios" : "Agregar dirección"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -134,9 +171,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 20,
     paddingTop: 10,
     backgroundColor: colors.white,
@@ -146,8 +183,8 @@ const styles = StyleSheet.create({
   backButton: {
     width: 40,
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   backButtonText: {
     fontSize: 28,
@@ -155,7 +192,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
   },
   scrollContainer: {
@@ -167,7 +204,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text,
     marginBottom: 8,
   },
@@ -181,10 +218,10 @@ const styles = StyleSheet.create({
   },
   textArea: {
     height: 80,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   halfWidth: {
@@ -193,10 +230,10 @@ const styles = StyleSheet.create({
   note: {
     fontSize: 12,
     color: colors.textLight,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
   footer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
@@ -209,11 +246,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     padding: 16,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   saveButtonText: {
     color: colors.white,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

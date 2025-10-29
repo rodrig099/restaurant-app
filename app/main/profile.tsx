@@ -1,36 +1,41 @@
-import { useRouter } from 'expo-router';
-import React from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useAuth } from '../../src/context/AuthContext';
-import { colors } from '../../src/utils/colors';
+import { useRouter } from "expo-router";
+import React from "react";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useAuth } from "../../src/context/AuthContext";
+import { colors } from "../../src/utils/colors";
 
 export default function ProfileScreen() {
   const { user, isGuest, logout } = useAuth();
   const router = useRouter();
 
   const handleLogout = () => {
-    Alert.alert(
-      'Cerrar Sesión',
-      '¿Estás seguro que deseas cerrar sesión?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Salir',
-          style: 'destructive',
-          onPress: () => {
-            logout();
-            router.replace('/auth/welcome');
-          },
+    Alert.alert("Cerrar Sesión", "¿Estás seguro que deseas cerrar sesión?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Salir",
+        style: "destructive",
+        onPress: () => {
+          logout();
+          router.replace("/auth/welcome");
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const MenuItem = ({ icon, title, onPress, danger = false }) => (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
       <View style={styles.menuItemLeft}>
         <Text style={styles.menuIcon}>{icon}</Text>
-        <Text style={[styles.menuTitle, danger && styles.dangerText]}>{title}</Text>
+        <Text style={[styles.menuTitle, danger && styles.dangerText]}>
+          {title}
+        </Text>
       </View>
       <Text style={styles.menuArrow}>›</Text>
     </TouchableOpacity>
@@ -51,14 +56,15 @@ export default function ProfileScreen() {
           </View>
           <View style={styles.userInfo}>
             <Text style={styles.userName}>
-              {isGuest ? 'Invitado' : user?.name || 'Usuario'}
+              {isGuest ? "Invitado" : user?.name || "Usuario"}
             </Text>
-            {!isGuest && (
-              <Text style={styles.userEmail}>{user?.email}</Text>
-            )}
+            {!isGuest && <Text style={styles.userEmail}>{user?.email}</Text>}
           </View>
           {!isGuest && (
-            <TouchableOpacity style={styles.editButton}>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => router.push("/edit-profile")}
+            >
               <Text style={styles.editButtonText}>Editar</Text>
             </TouchableOpacity>
           )}
@@ -70,21 +76,43 @@ export default function ProfileScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Cuenta</Text>
               <View style={styles.menuContainer}>
-                <MenuItem icon="📍" title="Mis Direcciones" onPress={() => router.push('/addresses')} />
-                <MenuItem icon="💳" title="Métodos de Pago" onPress={() => {}} />
+                <MenuItem
+                  icon="📍"
+                  title="Mis Direcciones"
+                  onPress={() => router.push("/addresses")}
+                />
+                <MenuItem
+                  icon="💳"
+                  title="Métodos de Pago"
+                  onPress={() => {}}
+                />
                 <MenuItem icon="🎟️" title="Cupones" onPress={() => {}} />
               </View>
             </View>
 
             {/* Preferences Section */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Preferencias</Text>
-              <View style={styles.menuContainer}>
-                <MenuItem icon="🔔" title="Notificaciones" onPress={() => {}} />
-                <MenuItem icon="🌙" title="Modo Oscuro" onPress={() => {}} />
-                <MenuItem icon="🌍" title="Idioma" onPress={() => {}} />
+            {!isGuest && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Preferencias</Text>
+                <View style={styles.menuContainer}>
+                  <MenuItem
+                    icon="🔔"
+                    title="Notificaciones"
+                    onPress={() => router.push("/settings")}
+                  />
+                  <MenuItem
+                    icon="🌙"
+                    title="Modo Oscuro"
+                    onPress={() => router.push("/settings")}
+                  />
+                  <MenuItem
+                    icon="🌍"
+                    title="Idioma"
+                    onPress={() => router.push("/settings")}
+                  />
+                </View>
               </View>
-            </View>
+            )}
           </>
         )}
 
@@ -92,18 +120,30 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Soporte</Text>
           <View style={styles.menuContainer}>
-            <MenuItem icon="❓" title="Ayuda" onPress={() => {}} />
-            <MenuItem icon="📄" title="Términos y Condiciones" onPress={() => {}} />
-            <MenuItem icon="🔒" title="Política de Privacidad" onPress={() => {}} />
+            <MenuItem
+              icon="❓"
+              title="Ayuda"
+              onPress={() => router.push("/about")}
+            />
+            <MenuItem
+              icon="📄"
+              title="Términos y Condiciones"
+              onPress={() => router.push("/about")}
+            />
+            <MenuItem
+              icon="🔒"
+              title="Política de Privacidad"
+              onPress={() => router.push("/about")}
+            />
           </View>
         </View>
 
         {/* Logout Button */}
         <View style={styles.section}>
           <View style={styles.menuContainer}>
-            <MenuItem 
-              icon="🚪" 
-              title={isGuest ? "Iniciar Sesión" : "Cerrar Sesión"} 
+            <MenuItem
+              icon="🚪"
+              title={isGuest ? "Iniciar Sesión" : "Cerrar Sesión"}
               onPress={handleLogout}
               danger={!isGuest}
             />
@@ -130,21 +170,21 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
   },
   scrollContainer: {
     padding: 20,
   },
   userCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: colors.white,
     borderRadius: 12,
     padding: 16,
     marginBottom: 24,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -154,8 +194,8 @@ const styles = StyleSheet.create({
     height: 60,
     backgroundColor: colors.card,
     borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   avatar: {
     fontSize: 32,
@@ -166,7 +206,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
     marginBottom: 4,
   },
@@ -184,38 +224,38 @@ const styles = StyleSheet.create({
   editButtonText: {
     color: colors.primary,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   section: {
     marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text,
     marginBottom: 12,
   },
   menuContainer: {
     backgroundColor: colors.white,
     borderRadius: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   menuItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
   menuItemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   menuIcon: {
     fontSize: 20,
@@ -233,7 +273,7 @@ const styles = StyleSheet.create({
     color: colors.textLight,
   },
   version: {
-    textAlign: 'center',
+    textAlign: "center",
     color: colors.textLight,
     fontSize: 12,
     marginTop: 20,

@@ -1,34 +1,62 @@
-import { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, Text } from 'react-native';
 import { colors } from '../utils/colors';
 
-const Toast = ({ message, visible, onHide }) => {
-  const opacity = new Animated.Value(0);
+const Toast = ({ message, visible, onHide, type = 'success' }) => {
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(50)).current;
 
   useEffect(() => {
     if (visible) {
-      Animated.sequence([
+      Animated.parallel([
         Animated.timing(opacity, {
           toValue: 1,
           duration: 300,
           useNativeDriver: true,
         }),
-        Animated.delay(2000),
-        Animated.timing(opacity, {
+        Animated.timing(translateY, {
           toValue: 0,
           duration: 300,
           useNativeDriver: true,
         }),
-      ]).start(() => {
-        onHide();
-      });
+      ]).start();
+
+      setTimeout(() => {
+        Animated.parallel([
+          Animated.timing(opacity, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateY, {
+            toValue: 50,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          onHide();
+        });
+      }, 2000);
     }
   }, [visible]);
 
   if (!visible) return null;
 
+  const backgroundColor = type === 'success' ? colors.success : 
+                         type === 'error' ? colors.primary : 
+                         colors.warning;
+
   return (
-    <Animated.View style={[styles.container, { opacity }]}>
+    <Animated.View 
+      style={[
+        styles.container, 
+        { 
+          opacity,
+          transform: [{ translateY }],
+          backgroundColor 
+        }
+      ]}
+    >
       <Text style={styles.message}>{message}</Text>
     </Animated.View>
   );
@@ -40,7 +68,6 @@ const styles = StyleSheet.create({
     bottom: 100,
     left: 20,
     right: 20,
-    backgroundColor: colors.success,
     padding: 16,
     borderRadius: 12,
     elevation: 5,

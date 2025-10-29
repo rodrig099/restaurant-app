@@ -1,13 +1,6 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import CategoryCard from "../../src/components/CategoryCard";
 import ProductCard from "../../src/components/ProductCard";
 import { useAuth } from "../../src/context/AuthContext";
@@ -20,6 +13,7 @@ export default function HomeScreen() {
   const { cartItems } = useCart();
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [refreshing, setRefreshing] = useState(false);
 
   const filteredProducts =
     selectedCategory === "all"
@@ -34,6 +28,14 @@ export default function HomeScreen() {
     (total, item) => total + item.quantity,
     0
   );
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    // Simular carga de datos
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -67,7 +69,17 @@ export default function HomeScreen() {
         <Text style={styles.searchText}>Buscar comida...</Text>
       </TouchableOpacity>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.primary}
+            colors={[colors.primary]}
+          />
+        }
+      >
         {/* Categories */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Categorías</Text>
@@ -134,7 +146,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 10,
     backgroundColor: colors.white,
   },
   greeting: {

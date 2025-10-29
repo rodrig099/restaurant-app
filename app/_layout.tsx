@@ -32,6 +32,9 @@ export default function RootLayout() {
                 <Stack.Screen name="order-confirmation" />
                 <Stack.Screen name="order-detail" />
                 <Stack.Screen name="search" />
+                <Stack.Screen name="edit-profile" />
+                <Stack.Screen name="about" />
+                <Stack.Screen name="settings" />
               </Stack>
             </SearchProvider>
           </OrderProvider>

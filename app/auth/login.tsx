@@ -1,22 +1,41 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../src/context/AuthContext';
 import { colors } from '../../src/utils/colors';
+import { validateEmail, validatePassword } from '../../src/utils/validators';
 
-export default function LoginScreen() {
+const LoginScreen = () => {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const router = useRouter();
 
   const handleLogin = () => {
-    if (email && password) {
-      login({ email, name: 'Usuario Demo' });
-      router.replace('/main/home');
-    } else {
-      alert('Por favor completa todos los campos');
+    // Validaciones
+    if (!email || !password) {
+      Alert.alert('Error', 'Por favor completa todos los campos');
+      return;
     }
+
+    if (!validateEmail(email)) {
+      Alert.alert('Error', 'Por favor ingresa un email válido');
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+
+    setLoading(true);
+    // Simular login
+    setTimeout(() => {
+      login({ email, name: email.split('@')[0] });
+      setLoading(false);
+      router.replace('/main/home');
+    }, 1000);
   };
 
   return (
@@ -40,6 +59,7 @@ export default function LoginScreen() {
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
+              editable={!loading}
             />
           </View>
 
@@ -51,6 +71,7 @@ export default function LoginScreen() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry
+              editable={!loading}
             />
           </View>
 
@@ -59,10 +80,13 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity 
-            style={styles.loginButton}
+            style={[styles.loginButton, loading && styles.loginButtonDisabled]}
             onPress={handleLogin}
+            disabled={loading}
           >
-            <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
+            <Text style={styles.loginButtonText}>
+              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+            </Text>
           </TouchableOpacity>
 
           <View style={styles.registerContainer}>
@@ -75,7 +99,7 @@ export default function LoginScreen() {
       </ScrollView>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -133,6 +157,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+  loginButtonDisabled: {
+    backgroundColor: colors.textLight,
+  },
   loginButtonText: {
     color: colors.white,
     fontSize: 16,
@@ -153,3 +180,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default LoginScreen;
