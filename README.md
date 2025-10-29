@@ -1,50 +1,199 @@
-# Welcome to your Expo app 👋
+# 🍔 Delicias Express - App de Restaurante
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicación móvil para pedidos de comida a domicilio desarrollada con React Native y Expo.
 
-## Get started
+## 📱 Características
 
-1. Install dependencies
+- ✅ Sistema de autenticación (Login, Registro, Modo Invitado)
+- ✅ Catálogo de productos con categorías
+- ✅ Búsqueda avanzada con filtros
+- ✅ Carrito de compras funcional
+- ✅ Gestión de múltiples direcciones de entrega
+- ✅ Checkout y confirmación de pedidos
+- ✅ Seguimiento de pedidos en tiempo real
+- ✅ Historial de pedidos
+- ✅ Repetir pedidos anteriores
+- ✅ Perfil de usuario personalizable
+- ✅ Configuración de notificaciones
+- ✅ Pago contra entrega
 
-   ```bash
-   npm install
-   ```
+## 🚀 Instalación
 
-2. Start the app
+### Prerrequisitos
 
-   ```bash
-   npx expo start
-   ```
+- Node.js (v14 o superior)
+- npm o yarn
+- Expo CLI
+- Android Studio (para emulador Android) o Xcode (para iOS)
 
-In the output, you'll find options to open the app in a
+### Pasos de instalación
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+1. Clonar el repositorio
 ```bash
-npm run reset-project
+git clone https://github.com/rodrig099/restaurant-app.git
+cd restaurant-app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Instalar dependencias
+```bash
+npm install
+```
 
-## Learn more
+3. Iniciar el proyecto
+```bash
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+4. Ejecutar en dispositivo
+- Presiona `a` para Android
+- Presiona `i` para iOS
+- Escanea el QR con Expo Go en tu dispositivo físico
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## 📦 Dependencias Principales
 
-## Join the community
+- **Expo** - Framework para React Native
+- **Expo Router** - Navegación basada en archivos
+- **React Native** - Framework para desarrollo móvil
+- **React Navigation** - Navegación con tabs
+- **@expo/vector-icons** - Iconos
 
-Join our community of developers creating universal apps.
+## 🏗️ Estructura del Proyecto
+```
+restaurant-app/
+├── app/                          # Pantallas (Expo Router)
+│   ├── auth/                     # Autenticación
+│   │   ├── welcome.tsx
+│   │   ├── login.tsx
+│   │   └── register.tsx
+│   ├── main/                     # Navegación principal
+│   │   ├── _layout.tsx           # Tab Navigator
+│   │   ├── home.tsx
+│   │   ├── cart.tsx
+│   │   ├── orders.tsx
+│   │   └── profile.tsx
+│   ├── product-detail.tsx
+│   ├── search.tsx
+│   ├── checkout.tsx
+│   ├── order-confirmation.tsx
+│   ├── order-detail.tsx
+│   ├── addresses.tsx
+│   ├── add-address.tsx
+│   ├── edit-profile.tsx
+│   ├── settings.tsx
+│   ├── about.tsx
+│   ├── index.tsx
+│   └── _layout.tsx
+├── src/
+│   ├── components/               # Componentes reutilizables
+│   │   ├── CategoryCard.js
+│   │   ├── ProductCard.js
+│   │   ├── Toast.js
+│   │   └── Loading.js
+│   ├── context/                  # Gestión de estado
+│   │   ├── AuthContext.js
+│   │   ├── CartContext.js
+│   │   ├── AddressContext.js
+│   │   ├── OrderContext.js
+│   │   └── SearchContext.js
+│   └── utils/                    # Utilidades
+│       ├── colors.js
+│       ├── mockData.js
+│       └── validators.js
+├── assets/                       # Recursos estáticos
+├── package.json
+└── README.md
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 🎨 Paleta de Colores
+```javascript
+{
+  primary: '#FF2D55',      // Rojo principal
+  secondary: '#FF6B6B',    // Rojo secundario
+  background: '#FFFFFF',   // Fondo blanco
+  card: '#F8F9FA',        // Gris muy claro
+  text: '#2D3436',        // Texto oscuro
+  textLight: '#636E72',   // Texto secundario
+  success: '#00B894',     // Verde
+  warning: '#FDCB6E',     // Amarillo
+  border: '#DFE6E9',      // Bordes
+}
+```
+
+## 🔄 Flujo de Usuario
+
+1. **Bienvenida** → Usuario puede iniciar sesión, registrarse o continuar como invitado
+2. **Home** → Explora categorías y productos
+3. **Búsqueda** → Busca y filtra productos
+4. **Producto** → Ve detalles y agrega al carrito
+5. **Carrito** → Revisa productos y cantidades
+6. **Checkout** → Selecciona dirección y confirma pedido
+7. **Confirmación** → Recibe número de pedido
+8. **Seguimiento** → Monitorea el estado del pedido
+
+## 📸 Screenshots
+
+_Proximamente_
+
+## 🛠️ Desarrollo
+
+### Agregar nueva pantalla
+```bash
+touch app/nueva-pantalla.tsx
+```
+
+### Agregar nuevo componente
+```bash
+touch src/components/NuevoComponente.js
+```
+
+### Agregar nuevo context
+```bash
+touch src/context/NuevoContext.js
+```
+
+## 🚧 Próximas Funcionalidades
+
+- [ ] Integración con API real
+- [ ] Persistencia con AsyncStorage
+- [ ] Imágenes reales de productos
+- [ ] Sistema de favoritos
+- [ ] Calificaciones y reseñas
+- [ ] Chat con soporte
+- [ ] Cupones de descuento
+- [ ] Programa de puntos
+- [ ] Compartir en redes sociales
+
+## 📝 Notas Importantes
+
+- **Pago**: Actualmente la app está configurada para pago contra entrega (efectivo al domiciliario)
+- **Datos**: Los productos y pedidos son datos mock (de prueba)
+- **Autenticación**: No hay validación real, es simulada para propósitos de desarrollo
+
+## 🤝 Contribuir
+
+Las contribuciones son bienvenidas. Por favor:
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/NuevaCaracteristica`)
+3. Commit tus cambios (`git commit -m 'Agregar nueva característica'`)
+4. Push a la rama (`git push origin feature/NuevaCaracteristica`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT.
+
+## 👤 Autor
+
+**rodrigo099**
+- GitHub: [@rodrig099](https://github.com/rodrig099)
+
+## 🙏 Agradecimientos
+
+- Expo Team por el excelente framework
+- React Native Community
+- Todos los contribuidores
+
+---
+
+⭐ Si te gusta este proyecto, dale una estrella en GitHub!
